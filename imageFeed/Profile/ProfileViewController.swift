@@ -55,7 +55,7 @@ class ProfileViewController: UIViewController {
         let userNickName = UILabel()
         userNickName.text = "@ekaterina_nov"
         let regularFontSize: CGFloat = 13
-        userNickName.textColor = UIColor(named: "YP White")
+        userNickName.textColor = UIColor(named: "YP Gray")
         let regularFont = UIFont.systemFont(ofSize: regularFontSize, weight: .regular)
         userNickName.font = regularFont
         view.addSubview(userNickName)
