@@ -7,8 +7,6 @@
 
 import Foundation
 
-fileprivate let UnsplashTokenURL = "https://unsplash.com/oauth/token"
-
 final class OAuth2Service {
     static let shared = OAuth2Service()
     private let urlSession = URLSession.shared
@@ -20,7 +18,6 @@ final class OAuth2Service {
             OAuth2TokenStorage().token = newValue
         }
     }
-
 
     func fetchOAuthToken(
         _ code: String,
