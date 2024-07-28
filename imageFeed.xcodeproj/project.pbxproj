@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		40A6A9FB2C55105A0081B3AE /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40A6A9FA2C55105A0081B3AE /* Constants.swift */; };
+		40A6AB4E2C5515720081B3AE /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40A6AB4D2C5515720081B3AE /* AuthViewController.swift */; };
+		40A6AB502C551F810081B3AE /* WebViewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40A6AB4F2C551F810081B3AE /* WebViewViewController.swift */; };
+		40A6AB542C5533810081B3AE /* OAuth2Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40A6AB532C5533810081B3AE /* OAuth2Service.swift */; };
+		40A6AB562C5536000081B3AE /* OAuthTokenResponseBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40A6AB552C5536000081B3AE /* OAuthTokenResponseBody.swift */; };
+		40A6AB582C55366A0081B3AE /* OAuth2TokenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40A6AB572C55366A0081B3AE /* OAuth2TokenStorage.swift */; };
+		40A6AB5B2C5537230081B3AE /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40A6AB5A2C5537230081B3AE /* SplashViewController.swift */; };
 		40FDABA72C4BAA3500A12916 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40FDABA62C4BAA3500A12916 /* AppDelegate.swift */; };
 		40FDABA92C4BAA3500A12916 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40FDABA82C4BAA3500A12916 /* SceneDelegate.swift */; };
 		40FDABAB2C4BAA3500A12916 /* ImagesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40FDABAA2C4BAA3500A12916 /* ImagesListViewController.swift */; };
@@ -19,6 +26,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		40A6A9FA2C55105A0081B3AE /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		40A6AB4D2C5515720081B3AE /* AuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
+		40A6AB4F2C551F810081B3AE /* WebViewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewViewController.swift; sourceTree = "<group>"; };
+		40A6AB532C5533810081B3AE /* OAuth2Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuth2Service.swift; sourceTree = "<group>"; };
+		40A6AB552C5536000081B3AE /* OAuthTokenResponseBody.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthTokenResponseBody.swift; sourceTree = "<group>"; };
+		40A6AB572C55366A0081B3AE /* OAuth2TokenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuth2TokenStorage.swift; sourceTree = "<group>"; };
+		40A6AB5A2C5537230081B3AE /* SplashViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
 		40FDABA32C4BAA3500A12916 /* imageFeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = imageFeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		40FDABA62C4BAA3500A12916 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		40FDABA82C4BAA3500A12916 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -43,6 +57,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		40A6AB4C2C5515610081B3AE /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				40A6AB4D2C5515720081B3AE /* AuthViewController.swift */,
+				40A6AB532C5533810081B3AE /* OAuth2Service.swift */,
+				40A6AB572C55366A0081B3AE /* OAuth2TokenStorage.swift */,
+				40A6AB552C5536000081B3AE /* OAuthTokenResponseBody.swift */,
+				40A6AB4F2C551F810081B3AE /* WebViewViewController.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		40A6AB592C55371A0081B3AE /* SplashViewController */ = {
+			isa = PBXGroup;
+			children = (
+				40A6AB5A2C5537230081B3AE /* SplashViewController.swift */,
+			);
+			path = SplashViewController;
+			sourceTree = "<group>";
+		};
 		40FDAB9A2C4BAA3500A12916 = {
 			isa = PBXGroup;
 			children = (
@@ -63,6 +97,8 @@
 			isa = PBXGroup;
 			children = (
 				40FDABA62C4BAA3500A12916 /* AppDelegate.swift */,
+				40A6AB592C55371A0081B3AE /* SplashViewController */,
+				40A6AB4C2C5515610081B3AE /* Auth */,
 				40FDABA82C4BAA3500A12916 /* SceneDelegate.swift */,
 				40FDABCA2C4D6C9E00A12916 /* SingleImage */,
 				40FDABC52C4D4FE600A12916 /* Profile */,
@@ -70,6 +106,7 @@
 				40FDABAC2C4BAA3500A12916 /* Main.storyboard */,
 				40FDABBF2C4BE38000A12916 /* Resources */,
 				40FDABB42C4BAA3600A12916 /* Info.plist */,
+				40A6A9FA2C55105A0081B3AE /* Constants.swift */,
 			);
 			path = imageFeed;
 			sourceTree = "<group>";
@@ -179,11 +216,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				40A6AB582C55366A0081B3AE /* OAuth2TokenStorage.swift in Sources */,
 				40FDABAB2C4BAA3500A12916 /* ImagesListViewController.swift in Sources */,
 				40FDABC22C4BE3C300A12916 /* ImagesListCell.swift in Sources */,
 				40FDABC42C4D4DBF00A12916 /* ProfileViewController.swift in Sources */,
 				40FDABA72C4BAA3500A12916 /* AppDelegate.swift in Sources */,
+				40A6AB562C5536000081B3AE /* OAuthTokenResponseBody.swift in Sources */,
+				40A6AB5B2C5537230081B3AE /* SplashViewController.swift in Sources */,
+				40A6AB4E2C5515720081B3AE /* AuthViewController.swift in Sources */,
+				40A6A9FB2C55105A0081B3AE /* Constants.swift in Sources */,
 				40FDABC92C4D678B00A12916 /* SingleImageViewController.swift in Sources */,
+				40A6AB502C551F810081B3AE /* WebViewViewController.swift in Sources */,
+				40A6AB542C5533810081B3AE /* OAuth2Service.swift in Sources */,
 				40FDABA92C4BAA3500A12916 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
