@@ -18,6 +18,7 @@ final class OAuth2TokenStorage {
         }
         set {
             UserDefaults.standard.set(newValue, forKey: tokenKey)
+            UserDefaults.standard.synchronize()
         }
     }
 }
