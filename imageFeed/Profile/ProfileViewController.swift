@@ -49,7 +49,7 @@ final class ProfileViewController: UIViewController {
 
     private let logoutButton: UIButton = {
         let logoutButton = UIButton.systemButton(
-            with: UIImage(systemName: "profile_logout_button")!,
+            with: UIImage(named: "profile_logout_button")!,
             target: ProfileViewController.self,
             action: nil
         )
