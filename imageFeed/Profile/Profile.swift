@@ -10,12 +10,12 @@ import Foundation
 struct Profile {
     let username: String
     let name: String
-    let bio: String?
+    let bio: String
     var loginName: String {
         return "@\(username)"
     }
 
-    init(username: String, firstName: String, lastName: String, bio: String?) {
+    init(username: String, firstName: String, lastName: String, bio: String) {
         self.username = username
         self.name = "\(firstName) \(lastName)"
         self.bio = bio

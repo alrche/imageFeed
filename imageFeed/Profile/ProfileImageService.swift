@@ -44,7 +44,9 @@ final class ProfileImageService {
             return
         }
 
-        let task = urlSession.objectTask(for: request) { (result: Result<UserResult, Error>) in
+        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<UserResult, Error>) in
+            guard let self = self else { return }
+
             switch result {
             case .success(let response):
                 let profileImage = response.profileImage.large

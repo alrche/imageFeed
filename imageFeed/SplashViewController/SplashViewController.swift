@@ -81,9 +81,12 @@ final class SplashViewController: UIViewController {
 
 extension SplashViewController: AuthViewControllerDelegate {
     func didAuntenticate(_ vc: AuthViewController) {
-        vc.dismiss(animated: true)
+        vc.dismiss(animated: true) 
+        if let token = tokenStorage.token {
+            fetchProfile(token: token)
+        }
     }
-    
+
     func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String) {
         dismiss(animated: true) { [weak self] in
             guard let self = self else { return }
@@ -100,7 +103,10 @@ extension SplashViewController: AuthViewControllerDelegate {
             guard let self = self else { return }
             
             switch result {
-            case .success(_):
+            case .success(let profile):
+                ProfileImageService.shared.fetchProfileImageURL(
+                    username: profile.username) { _ in }
+                UIBlockingProgressHUD.dismiss()
                 switchToTabBarController()
             case .failure(let error):
                 print("[\(String(describing: self)).\(#function)]: \(AuthServiceError.invalidResponse) - Ошибка получения данных профиля, \(error.localizedDescription)")

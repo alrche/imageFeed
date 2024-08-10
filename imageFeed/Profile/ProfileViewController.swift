@@ -48,11 +48,8 @@ final class ProfileViewController: UIViewController {
     }()
 
     private let logoutButton: UIButton = {
-        let logoutButton = UIButton.systemButton(
-            with: UIImage(named: "profile_logout_button")!,
-            target: ProfileViewController.self,
-            action: nil
-        )
+        let logoutButton = UIButton(type: .custom)
+        logoutButton.setImage(UIImage(named: "profile_logout_button"), for: .normal)
         logoutButton.tintColor = .ypRed
 
         return logoutButton

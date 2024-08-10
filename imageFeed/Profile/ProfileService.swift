@@ -44,10 +44,17 @@ final class ProfileService {
             return
         }
 
-        let task = urlSession.objectTask(for: request) { (result: Result<ProfileResult, Error>) in
+        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<ProfileResult, Error>) in
+            guard let self = self else { return }
+            
             switch result {
             case .success(let response):
-                let profile = Profile(username: response.username, firstName: response.firstName, lastName: response.lastName, bio: response.bio)
+                let profile = Profile(
+                    username: response.username,
+                    firstName: response.firstName ?? "",
+                    lastName: response.lastName ?? "",
+                    bio: response.bio ?? ""
+                )
                 self.profile = profile
                 ProfileImageService.shared.fetchProfileImageURL(username: response.username) { _ in }
                 completion(.success(profile))
