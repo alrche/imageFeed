@@ -7,91 +7,168 @@
 
 import Foundation
 import UIKit
+import Kingfisher
+import WebKit
 
-class ProfileViewController: UIViewController {
+final class ProfileViewController: UIViewController {
 
-    private func initProfileImage (view: UIView) {
-        view.backgroundColor = UIColor(named: "YP Black")
-        let profileImage = UIImage(named: "profile_userpick")
-        let profilePhotoView = UIImageView(image: profileImage)
-        profilePhotoView.tag = 1
-        view.addSubview(profilePhotoView)
+    private let profileService = ProfileService.shared
+    private var profileImageServiceObserver: NSObjectProtocol?
 
-        profilePhotoView.translatesAutoresizingMaskIntoConstraints = false
-        profilePhotoView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
-        profilePhotoView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32).isActive = true
-        profilePhotoView.heightAnchor.constraint(equalToConstant: 70).isActive = true
-        profilePhotoView.widthAnchor.constraint(equalToConstant: 70).isActive = true
+    private let profileImage: UIImageView = {
+        let profileImage = UIImageView()
+        profileImage.image = UIImage(named: "profile_userpick")
+        profileImage.layer.cornerRadius = 35
+        profileImage.clipsToBounds = true
+        return profileImage
+    }()
 
-    }
+    private let realNameLabel: UILabel = {
+        let realNameLabel = UILabel()
+        realNameLabel.text = ""
+        realNameLabel.textColor = .ypWhite
+        realNameLabel.font = UIFont.systemFont(ofSize: 23)
+        return realNameLabel
+    }()
 
-    private func initLogoutButton(view: UIView) {
-        let logOutButton = UIButton.systemButton(
-            with: UIImage(named: "profile_logout_button")!,
-            target: self,
-            action: #selector(Self.didTapLogoutButton)
+    private let usernameLabel: UILabel = {
+        let usernameLabel = UILabel()
+        usernameLabel.text = ""
+        usernameLabel.textColor = .ypGray
+        usernameLabel.font = UIFont.systemFont(ofSize: 13)
+        return usernameLabel
+    }()
+
+    private let textLabel: UILabel = {
+        let textLabel = UILabel()
+        textLabel.text = ""
+        textLabel.textColor = .ypWhite
+        textLabel.font = UIFont.systemFont(ofSize: 13)
+        return textLabel
+    }()
+
+    private let logoutButton: UIButton = {
+        let logoutButton = UIButton.systemButton(
+            with: UIImage(systemName: "profile_logout_button")!,
+            target: ProfileViewController.self,
+            action: nil
         )
+        logoutButton.tintColor = .ypRed
 
-        logOutButton.tintColor = UIColor(named: "YP Red")
-        view.addSubview(logOutButton)
-        logOutButton.translatesAutoresizingMaskIntoConstraints = false
-        logOutButton.centerYAnchor.constraint(equalTo: view.viewWithTag(1)!
-            .centerYAnchor).isActive = true
-        logOutButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -24).isActive = true
-    }
-
-    private func initLabels(view: UIView) {
-        let userName = UILabel()
-        userName.text = "Екатерина Новикова"
-        userName.textColor = UIColor(named: "YP White")
-        let boldFontSize: CGFloat = 23
-        let boldFont = UIFont.systemFont(ofSize: boldFontSize, weight: .bold)
-        userName.font = boldFont
-        view.addSubview(userName)
-        userName.translatesAutoresizingMaskIntoConstraints = false
-        userName.topAnchor.constraint(equalTo: view.viewWithTag(1)!.bottomAnchor, constant: 8).isActive = true
-        userName.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
-
-        let userNickName = UILabel()
-        userNickName.text = "@ekaterina_nov"
-        let regularFontSize: CGFloat = 13
-        userNickName.textColor = UIColor(named: "YP Gray")
-        let regularFont = UIFont.systemFont(ofSize: regularFontSize, weight: .regular)
-        userNickName.font = regularFont
-        view.addSubview(userNickName)
-        userNickName.translatesAutoresizingMaskIntoConstraints = false
-        userNickName.topAnchor.constraint(equalTo: userName.bottomAnchor, constant: 8).isActive = true
-        userNickName.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
-
-        let userDescription = UILabel()
-        userDescription.text = "Hello, world!"
-        userDescription.textColor = UIColor(named: "YP White")
-        userDescription.font = regularFont
-        view.addSubview(userDescription)
-        view.addSubview(userDescription)
-        userDescription.translatesAutoresizingMaskIntoConstraints = false
-        userDescription.topAnchor.constraint(equalTo: userNickName.bottomAnchor, constant: 8).isActive = true
-        userDescription.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
-    }
+        return logoutButton
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        initProfileImage (view: view)
-        initLogoutButton(view: view)
-        initLabels(view: view)
+
+        updateProfileDetails(profile: profileService.profile)
+
+        profileImageServiceObserver = NotificationCenter.default.addObserver(
+            forName: ProfileImageService.didChangeNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            guard let self = self else { return }
+            self.updateProfileImage()
+        }
+        updateProfileImage()
+
+        logoutButton.addTarget(self, action: #selector(logoutButtonDidTap), for: .touchUpInside)
+        setupUI()
     }
 
-    @objc
-    private func didTapLogoutButton() {
-        for view in view.subviews {
-            if view is UILabel {
-                view.removeFromSuperview()
-            } else {
-                if let imageView = view as? UIImageView {
-                    imageView.image = UIImage(named: "profile_stub")
-                    imageView.tintColor = UIColor(named: "YP Gray")
-                }
+    private func updateProfileImage() {
+        guard let profileImageURL = ProfileImageService.shared.profileImageURL,
+              let url = URL(string: profileImageURL)
+        else { return }
+
+        let processor = RoundCornerImageProcessor(cornerRadius: 20)
+        profileImage.kf.indicatorType = .activity
+        profileImage.kf.setImage(with: url,
+                                 placeholder: UIImage(named: "userpick_stub"),
+                                 options: [.processor(processor)]) { result in
+            switch result {
+            case .success(let value):
+                print(value.image)
+            case .failure(let error):
+                print(error.localizedDescription)
             }
         }
+
+    }
+
+    private func updateProfileDetails(profile: Profile?) {
+        guard let profile = profile else {
+            return
+        }
+        self.realNameLabel.text = profile.name
+        self.usernameLabel.text = profile.loginName
+        self.textLabel.text = profile.bio
+    }
+
+    private func setupUI() {
+        view.backgroundColor = .ypBlack
+
+        profileImage.translatesAutoresizingMaskIntoConstraints = false
+        realNameLabel.translatesAutoresizingMaskIntoConstraints = false
+        usernameLabel.translatesAutoresizingMaskIntoConstraints = false
+        textLabel.translatesAutoresizingMaskIntoConstraints = false
+        logoutButton.translatesAutoresizingMaskIntoConstraints = false
+
+        view.addSubview(profileImage)
+        view.addSubview(realNameLabel)
+        view.addSubview(usernameLabel)
+        view.addSubview(textLabel)
+        view.addSubview(logoutButton)
+
+        NSLayoutConstraint.activate([
+            profileImage.widthAnchor.constraint(equalToConstant: 70),
+            profileImage.heightAnchor.constraint(equalToConstant: 70),
+            profileImage.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
+            profileImage.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+
+            realNameLabel.topAnchor.constraint(equalTo: profileImage.bottomAnchor, constant: 8),
+            realNameLabel.leadingAnchor.constraint(equalTo: profileImage.leadingAnchor),
+
+            usernameLabel.topAnchor.constraint(equalTo: realNameLabel.bottomAnchor, constant: 8),
+            usernameLabel.leadingAnchor.constraint(equalTo: profileImage.leadingAnchor),
+
+            textLabel.topAnchor.constraint(equalTo: usernameLabel.bottomAnchor, constant: 8),
+            textLabel.leadingAnchor.constraint(equalTo: profileImage.leadingAnchor),
+
+            logoutButton.centerYAnchor.constraint(equalTo: profileImage.centerYAnchor),
+            logoutButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -24),
+            logoutButton.widthAnchor.constraint(equalToConstant: 24),
+            logoutButton.heightAnchor.constraint(equalToConstant: 24)
+        ])
+    }
+
+    func clearCookies() {
+        let cookieStorage = HTTPCookieStorage.shared
+        if let cookies = cookieStorage.cookies {
+            for cookie in cookies {
+                cookieStorage.deleteCookie(cookie)
+            }
+        }
+    }
+
+    func clearWebsiteData() {
+        let dataStore = WKWebsiteDataStore.default()
+        let dataTypes = WKWebsiteDataStore.allWebsiteDataTypes()
+        let date = Date(timeIntervalSince1970: 0)
+
+        dataStore.removeData(ofTypes: dataTypes, modifiedSince: date) {
+            print("Все данные WKWebsiteDataStore были очищены")
+        }
+    }
+
+    @objc private func logoutButtonDidTap(_ sender: Any) {
+        OAuth2TokenStorage.deleteToken()
+        clearCookies()
+        clearWebsiteData()
+
+        let viewController = SplashViewController()
+        viewController.modalPresentationStyle = .fullScreen
+        present(viewController, animated: true, completion: nil)
     }
 }
