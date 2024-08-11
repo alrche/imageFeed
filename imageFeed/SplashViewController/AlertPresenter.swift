@@ -8,26 +8,43 @@
 import Foundation
 import UIKit
 
+protocol AlertPresenting: AnyObject {
+    func showAlert(for result: AlertModel)
+}
+
 struct AlertModel {
     let title: String
     let message: String
-    let buttonTitle: String
-    let buttonAction: ((UIAlertAction) -> Void)?
+    let buttonText: String
+    let completion: (() -> Void)?
 }
 
 final class AlertPresenter {
+
     private weak var viewController: UIViewController?
 
-    init(viewController: UIViewController) {
+    init(viewController: UIViewController?) {
         self.viewController = viewController
     }
+}
 
-    func show(model: AlertModel) {
-        guard let viewController = viewController else { return }
+extension AlertPresenter: AlertPresenting {
 
-        let alertController = UIAlertController(title: model.title, message: model.message, preferredStyle: .alert)
-        let action = UIAlertAction(title: model.buttonTitle, style: .default, handler: model.buttonAction)
-        alertController.addAction(action)
-        viewController.present(alertController, animated: true, completion: nil)
+    func showAlert(for result: AlertModel) {
+        let alert = UIAlertController(
+            title: result.title,
+            message: result.message,
+            preferredStyle: .alert)
+        let alertAction = UIAlertAction(title: result.buttonText, style: .default) { _ in
+            result.completion?()
+        }
+        alert.addAction(alertAction)
+
+        if var topController = UIApplication.shared.windows[0].rootViewController {
+            while let presentedViewController = topController.presentedViewController {
+                topController = presentedViewController
+            }
+            topController.present(alert, animated: true)
+        }
     }
 }

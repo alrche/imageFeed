@@ -14,6 +14,9 @@ final class OAuth2Service {
     private let urlSession = URLSession.shared
     private var task: URLSessionTask?
     private var lastCode: String?
+    var isAuthenticated: Bool {
+        OAuth2TokenStorage().token != nil
+    }
 
     func makeOAuthTokenRequest(code: String) throws ->  URLRequest? {
         guard var urlComponents = URLComponents(string: Constants.unsplashTokenURLString) else {

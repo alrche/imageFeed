@@ -20,17 +20,14 @@ final class SplashViewController: UIViewController {
     private let oauth2Service = OAuth2Service.shared
     private let tokenStorage = OAuth2TokenStorage()
     private var alertPresenter: AlertPresenter?
-    
+    private var isEntered = false
+
     var delegate: AuthViewControllerDelegate?
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
-        if let token = tokenStorage.token {
-            fetchProfile(token: token)
-        } else {
-            showAuthViewController()
-        }
+
+        checkAuthStatus()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -44,7 +41,8 @@ final class SplashViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+       
+        alertPresenter = AlertPresenter(viewController: self)
         setupUI()
     }
     
@@ -61,7 +59,42 @@ final class SplashViewController: UIViewController {
             logoImageView.heightAnchor.constraint(equalToConstant: 77.68)
         ])
     }
-    
+
+    private func checkAuthStatus() {
+        guard !isEntered else { return }
+        isEntered = true
+        if oauth2Service.isAuthenticated {
+            UIBlockingProgressHUD.show()
+
+            if let token = tokenStorage.token {
+                fetchProfile(token: token)
+            }
+            UIBlockingProgressHUD.dismiss()
+            self.switchToTabBarController()
+        } else {
+            showAuthViewController()
+        }
+    }
+
+    private func showLoginAlert(error: Error) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            let alertModel = AlertModel(
+                title: "Что-то пошло не так :(",
+                message: "Не удалось войти в систему: \(error.localizedDescription)",
+                buttonText: "Ok") { [weak self] in
+                    guard let self = self else { return }
+                    self.isEntered = false
+                    guard OAuth2TokenStorage.deleteToken() else {
+                        assertionFailure("Cannot remove token")
+                        return
+                    }
+                    self.checkAuthStatus()
+                }
+            self.alertPresenter?.showAlert(for: alertModel)
+        }
+    }
+
     private func showAuthViewController() {
         let storyboard = UIStoryboard(name: "Main", bundle: .main)
         let viewController = storyboard.instantiateViewController(withIdentifier: "AuthViewController")
@@ -128,15 +161,8 @@ extension SplashViewController: AuthViewControllerDelegate {
                 fetchProfile(token: token)
             case .failure(let error):
                 print("[\(String(describing: self)).\(#function)]: \(AuthServiceError.invalidResponse) - Ошибка получения OAuth токена, \(error.localizedDescription)")
-                
-                let alertModel = AlertModel(
-                    title: "Что-то пошло не так(",
-                    message: "Не удалось войти в систему",
-                    buttonTitle: "ОК",
-                    buttonAction: nil
-                )
-                
-                alertPresenter?.show(model: alertModel)
+
+                self.showLoginAlert(error: error)
             }
         }
         

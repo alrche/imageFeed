@@ -160,7 +160,10 @@ final class ProfileViewController: UIViewController {
     }
 
     @objc private func logoutButtonDidTap(_ sender: Any) {
-        OAuth2TokenStorage.deleteToken()
+        guard OAuth2TokenStorage.deleteToken() else {
+            assertionFailure("Can't remove token")
+            return
+        }
         clearCookies()
         clearWebsiteData()
 
