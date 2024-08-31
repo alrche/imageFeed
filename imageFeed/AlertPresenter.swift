@@ -17,6 +17,8 @@ struct AlertModel {
     let message: String
     let buttonText: String
     let completion: (() -> Void)?
+    var secondButtonText: String? = nil
+    var secondCompletion: (() -> Void)? = {}
 }
 
 final class AlertPresenter {
@@ -31,6 +33,8 @@ final class AlertPresenter {
 extension AlertPresenter: AlertPresenting {
 
     func showAlert(for result: AlertModel) {
+        guard let viewController = viewController else { return }
+
         let alert = UIAlertController(
             title: result.title,
             message: result.message,
@@ -40,11 +44,13 @@ extension AlertPresenter: AlertPresenting {
         }
         alert.addAction(alertAction)
 
-        if var topController = UIApplication.shared.windows[0].rootViewController {
-            while let presentedViewController = topController.presentedViewController {
-                topController = presentedViewController
+        if let secondButtonText = result.secondButtonText {
+            let secondAction = UIAlertAction(title: secondButtonText, style: .default) { _ in
+                result.secondCompletion?()
             }
-            topController.present(alert, animated: true)
+            alert.addAction(secondAction)
         }
+
+        viewController.present(alert, animated: true, completion: nil)
     }
 }

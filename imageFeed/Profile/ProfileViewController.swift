@@ -140,35 +140,23 @@ final class ProfileViewController: UIViewController {
         ])
     }
 
-    func clearCookies() {
-        let cookieStorage = HTTPCookieStorage.shared
-        if let cookies = cookieStorage.cookies {
-            for cookie in cookies {
-                cookieStorage.deleteCookie(cookie)
-            }
-        }
-    }
-
-    func clearWebsiteData() {
-        let dataStore = WKWebsiteDataStore.default()
-        let dataTypes = WKWebsiteDataStore.allWebsiteDataTypes()
-        let date = Date(timeIntervalSince1970: 0)
-
-        dataStore.removeData(ofTypes: dataTypes, modifiedSince: date) {
-            print("Все данные WKWebsiteDataStore были очищены")
-        }
-    }
-
     @objc private func logoutButtonDidTap(_ sender: Any) {
-        guard OAuth2TokenStorage.deleteToken() else {
-            assertionFailure("Can't remove token")
-            return
-        }
-        clearCookies()
-        clearWebsiteData()
+        let presenter = AlertPresenter(viewController: self)
 
-        let viewController = SplashViewController()
-        viewController.modalPresentationStyle = .fullScreen
-        present(viewController, animated: true, completion: nil)
+        let alertModel = AlertModel(
+            title: "Пока, пока!",
+            message: "Уверены что хотите выйти?",
+            buttonText: "Да",
+            completion: {
+                ProfileLogoutService.shared.logout()
+                let viewController = SplashViewController()
+                viewController.modalPresentationStyle = .fullScreen
+                self.present(viewController, animated: true, completion: nil)
+            },
+            secondButtonText: "Нет",
+            secondCompletion: nil
+        )
+
+        presenter.showAlert(for: alertModel)
     }
 }

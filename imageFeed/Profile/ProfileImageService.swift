@@ -64,6 +64,10 @@ final class ProfileImageService {
         self.task = task
         task.resume()
     }
+
+    func clearProfileImage() {
+        profileImageURL = nil
+    }
 }
 
 enum ProfileImageServiceError: Error {
