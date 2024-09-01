@@ -147,14 +147,13 @@ final class ProfileViewController: UIViewController {
             title: "Пока, пока!",
             message: "Уверены что хотите выйти?",
             buttonText: "Да",
-            completion: {
+            completion: { [weak self] _ in
                 ProfileLogoutService.shared.logout()
                 let viewController = SplashViewController()
                 viewController.modalPresentationStyle = .fullScreen
-                self.present(viewController, animated: true, completion: nil)
+                self?.present(viewController, animated: true, completion: nil)
             },
-            secondButtonText: "Нет",
-            secondCompletion: nil
+            secondButtonText: "Нет"
         )
 
         presenter.showAlert(for: alertModel)

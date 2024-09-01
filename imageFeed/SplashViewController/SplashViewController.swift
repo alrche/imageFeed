@@ -82,7 +82,7 @@ final class SplashViewController: UIViewController {
             let alertModel = AlertModel(
                 title: "Что-то пошло не так :(",
                 message: "Не удалось войти в систему: \(error.localizedDescription)",
-                buttonText: "Ok") { [weak self] in
+                buttonText: "Ok") { [weak self] _ in
                     guard let self = self else { return }
                     self.isEntered = false
                     guard OAuth2TokenStorage.deleteToken() else {

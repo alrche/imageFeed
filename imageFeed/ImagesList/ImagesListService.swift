@@ -35,7 +35,9 @@ final class ImageListService {
             return
         }
 
-        let task = urlSession.objectTask(for: request) { (result: Result<[PhotoResult], Error>) in
+        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<[PhotoResult], Error>) in
+            guard let self = self else { return }
+            
             switch result {
             case .success(let response):
                 for element in response {
@@ -78,7 +80,9 @@ final class ImageListService {
             return
         }
 
-        let task = urlSession.objectTask(for: request) { (result: Result<LikeResult, Error>) in
+        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<LikeResult, Error>) in
+            guard let self = self else { return }
+
             switch result {
             case .success(let response):
 

@@ -133,7 +133,7 @@ final class SingleImageViewController: UIViewController {
             buttonText: "Не надо",
             completion: nil,
             secondButtonText: "Повторить",
-            secondCompletion: { self.downloadFullImage(url: url) }
+            secondCompletion: { [weak self] _ in self?.downloadFullImage(url: url) }
         )
         let alertPresenter = AlertPresenter(viewController: self)
         alertPresenter.showAlert(for: alertModel)

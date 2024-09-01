@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PhotoResult: Codable {
+struct PhotoResult: Decodable {
 
     let id: String
     let createdAt: String
@@ -36,7 +36,7 @@ struct PhotoResult: Codable {
     }
 }
 
-struct UrlsResult: Codable {
+struct UrlsResult: Decodable {
     let raw: String
     let full: String
     let regular: String

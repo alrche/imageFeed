@@ -95,6 +95,44 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		400459622C8448BF0024F678 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				400459632C84490C0024F678 /* Profile */,
+				400459642C84491D0024F678 /* ImagesList */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		400459632C84490C0024F678 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				405E0DB52C678C9300D3569A /* ProfileResult.swift */,
+				405E0DB32C678C6100D3569A /* Profile.swift */,
+				405E0DBD2C67A40C00D3569A /* ProfileImage.swift */,
+				405E0DBB2C67A3FC00D3569A /* ProfileImageResult.swift */,
+			);
+			path = Profile;
+			sourceTree = "<group>";
+		};
+		400459642C84491D0024F678 /* ImagesList */ = {
+			isa = PBXGroup;
+			children = (
+				400459542C83213E0024F678 /* Photo.swift */,
+				400459562C83214B0024F678 /* PhotoResult.swift */,
+				4004595E2C8347AA0024F678 /* LikeResult.swift */,
+			);
+			path = ImagesList;
+			sourceTree = "<group>";
+		};
+		400459652C8451A50024F678 /* Alert */ = {
+			isa = PBXGroup;
+			children = (
+				405E0DB72C67A33A00D3569A /* AlertPresenter.swift */,
+			);
+			path = Alert;
+			sourceTree = "<group>";
+		};
 		405E0DAB2C6786D800D3569A /* OAuth2 */ = {
 			isa = PBXGroup;
 			children = (
@@ -162,7 +200,8 @@
 			children = (
 				40FDABA62C4BAA3500A12916 /* AppDelegate.swift */,
 				40FDABA82C4BAA3500A12916 /* SceneDelegate.swift */,
-				405E0DB72C67A33A00D3569A /* AlertPresenter.swift */,
+				400459622C8448BF0024F678 /* Models */,
+				400459652C8451A50024F678 /* Alert */,
 				40A6AB592C55371A0081B3AE /* SplashViewController */,
 				405E0DAB2C6786D800D3569A /* OAuth2 */,
 				40A6AB4C2C5515610081B3AE /* Auth */,
@@ -191,10 +230,7 @@
 			isa = PBXGroup;
 			children = (
 				40FDABAA2C4BAA3500A12916 /* ImagesListViewController.swift */,
-				400459542C83213E0024F678 /* Photo.swift */,
-				400459562C83214B0024F678 /* PhotoResult.swift */,
 				40FDABC12C4BE3C300A12916 /* ImagesListCell.swift */,
-				4004595E2C8347AA0024F678 /* LikeResult.swift */,
 				400459502C8320AB0024F678 /* ImagesListService.swift */,
 			);
 			path = ImagesList;
@@ -206,11 +242,7 @@
 				40FDABC32C4D4DBF00A12916 /* ProfileViewController.swift */,
 				405E0DB12C678BD000D3569A /* ProfileService.swift */,
 				4004595A2C83341E0024F678 /* ProfileLogoutService.swift */,
-				405E0DB52C678C9300D3569A /* ProfileResult.swift */,
 				405E0DB92C67A3E200D3569A /* ProfileImageService.swift */,
-				405E0DBB2C67A3FC00D3569A /* ProfileImageResult.swift */,
-				405E0DBD2C67A40C00D3569A /* ProfileImage.swift */,
-				405E0DB32C678C6100D3569A /* Profile.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
