@@ -10,8 +10,10 @@ import Foundation
 enum Constants {
 //    static let accessKey = "_Nu5k0UOjgD7ea66I6_hzNItciqWbvGJROf4wXyxvbI"
 //    static let secretKey = "0PaKqglnm34YAGrRYt_UAl5-ihvH17VZIaje958iD44"
-    static let accessKey = "pzuqlAMxGgEkh0nSUuzHoyP2poy7ZDeHVOo4xz5MWzU"
-    static let secretKey = "Lci1-4msIJyVXBduwCQFst3it6Z25SFabaxeZshaTaU"
+//    static let accessKey = "pzuqlAMxGgEkh0nSUuzHoyP2poy7ZDeHVOo4xz5MWzU"
+//    static let secretKey = "Lci1-4msIJyVXBduwCQFst3it6Z25SFabaxeZshaTaU"
+    static let accessKey = "bmydUKnIHeMKNxju7o4JSXGKomYnKukmAqIgK2Dysh4"
+    static let secretKey = "OyUSnrietm-cly_WSg0NJ6X9A-Q4CJS9TZcqRtuRexE"
 //    static let accessKey = "bkl0moEA3oTXDMwPZuT26RavnIQ5XmTNedI38qH7-6A"
 //    static let secretKey = "bU75WIQrk84Vd4iBxPudg0GY6fKRR4jRn0L6E2UqRVc"
 //    static let accessKey = "vPRvlYOPvN4Hbf4gYXPtc-4AL0Ck3HVALlMDy8XhFXU"
