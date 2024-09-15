@@ -13,7 +13,7 @@ protocol ImagesListCellDelegate: ImagesListViewController {
     func imageListCellDidTapLike(_ cell: ImagesListCell)
 }
 
-final class ImagesListCell: UITableViewCell {
+final public class ImagesListCell: UITableViewCell {
 
     static let reuseIdentifier = "ImagesListCell"
     weak var delegate: ImagesListCellDelegate?
@@ -33,6 +33,7 @@ final class ImagesListCell: UITableViewCell {
         button.layer.shadowOpacity = 0.2
         button.layer.shadowOffset = CGSize(width: 0, height:1)
         button.layer.shadowRadius = 4
+        button.accessibilityIdentifier = "like_button_off"
         return button
     }()
 
@@ -70,13 +71,13 @@ final class ImagesListCell: UITableViewCell {
         super.init(coder: aDecoder)
     }
 
-    override func layoutSubviews() {
+    public override func layoutSubviews() {
         super.layoutSubviews()
 
         contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 4, left: 0, bottom: 4, right: 0))
     }
 
-    override func prepareForReuse() {
+    public override func prepareForReuse() {
         super.prepareForReuse( )
 
         mainImage.kf.cancelDownloadTask()
@@ -94,6 +95,7 @@ final class ImagesListCell: UITableViewCell {
         DispatchQueue.main.async {
             let imageName = isLiked ? "like_button_on" : "like_button_off"
             self.likeButton.setImage(UIImage(named: imageName), for: .normal)
+            self.likeButton.accessibilityIdentifier = imageName
         }
     }
 

@@ -8,16 +8,26 @@
 import UIKit
 import Kingfisher
 
+public protocol ImagesListViewControllerProtocol: AnyObject {
+    var presenter: ImagesListViewPresenterProtocol? { get set }
+    var photos: [Photo] { get set }
+    var tableView: UITableView { get }
+    func updateTableViewAnimated()
+    func showLikeAlert()
+}
+
 final class ImagesListViewController: UIViewController {
+    var presenter: ImagesListViewPresenterProtocol?
+
     private var imageListServiceObserver: NSObjectProtocol?
-    
+
     private let placeholderImage: UIImageView = {
         let view = UIImageView()
         view.image = UIImage(named: "placeholder")
         return view
     }()
 
-    private let tableView: UITableView = {
+    let tableView: UITableView = {
         let tableView = UITableView()
         tableView.backgroundColor = .ypBlack
         tableView.register(
@@ -27,41 +37,20 @@ final class ImagesListViewController: UIViewController {
         return tableView
     }()
 
-    private var photos: [Photo] = []
+    var photos: [Photo] = []
     private let imageListService = ImageListService.shared
-
-    private lazy var dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .none
-        formatter.locale = Locale(identifier: "ru_RU")
-        return formatter
-    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        presenter = ImagesListViewPresenter()
+        presenter?.view = self
+        
         tableView.delegate = self
         tableView.dataSource = self
 
         setupUI()
         setupObserver()
-    }
-
-    private func setupObserver() {
-        UIBlockingProgressHUD.show()
-        imageListService.fetchPhotosNextPage() { _ in }
-        imageListServiceObserver = NotificationCenter.default
-            .addObserver(
-                forName: ImageListService.didChangeNotification,
-                object: nil,
-                queue: .main
-            ) { [weak self] _ in
-                guard let self = self else { return }
-
-                self.updateTableViewAnimated()
-                UIBlockingProgressHUD.dismiss()
-                placeholderImage.isHidden = true
-            }
     }
 
     private func setupUI() {
@@ -85,59 +74,6 @@ final class ImagesListViewController: UIViewController {
             placeholderImage.heightAnchor.constraint(equalToConstant: 75)
         ])
     }
-
-    private func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
-        cell.backgroundColor = .clear
-        cell.selectionStyle = .none
-
-        guard let url = URL(string: photos[indexPath.item].thumbImageURL) else { return }
-        let imageView = UIImageView()
-        let processor = RoundCornerImageProcessor(cornerRadius: 8)
-        imageView.kf.indicatorType = .activity
-        imageView.kf.setImage(with: url,
-                              placeholder: .none,
-                              options: [.processor(processor)]) { result in
-            switch result {
-            case .success(_):
-
-                var textDate = ""
-                if let date = self.photos[indexPath.item].createdAt {
-                    textDate = self.dateFormatter.string(from: date)
-                }
-
-                cell.updateCell(
-                    cellDataLabelTitle: textDate,
-                    likeButtonTitle: "",
-                    imageView: imageView
-                )
-                self.tableView.reloadRows(at: [indexPath], with: .automatic)
-
-            case .failure(let error):
-                let logMessage =
-                """
-                [\(String(describing: self)).\(#function)]:
-                \(ImageListServiceError.fetchImageError) - Ошибка получения изображения ячейки таблицы, \(error.localizedDescription)
-                """
-                print(logMessage)
-            }
-        }
-
-        cell.setIsLiked(isLiked: photos[indexPath.item].isLiked)
-    }
-
-    private func updateTableViewAnimated() {
-        let oldCount = photos.count
-        let newCount = imageListService.photos.count
-        photos = imageListService.photos
-        if oldCount != newCount {
-            tableView.performBatchUpdates {
-                let indexPaths = (oldCount..<newCount).map { i in
-                    IndexPath(row: i, section: 0)
-                }
-                tableView.insertRows(at: indexPaths, with: .automatic)
-            } completion: { _ in }
-        }
-    }
 }
 
 extension ImagesListViewController: UITableViewDataSource {
@@ -154,7 +90,7 @@ extension ImagesListViewController: UITableViewDataSource {
         cell.prepareForReuse()
         cell.delegate = self
 
-        configCell(for: cell, with: indexPath)
+        presenter?.configCell(for: cell, with: indexPath)
         return cell
     }
 
@@ -202,28 +138,52 @@ extension ImagesListViewController: UITableViewDelegate {
 
 extension ImagesListViewController: ImagesListCellDelegate {
     func imageListCellDidTapLike(_ cell: ImagesListCell) {
-        guard let indexPath = tableView.indexPath(for: cell)  else { return }
-        let photo = photos[indexPath.row]
+        presenter?.imageListCellDidTapLike(cell)
+    }
+}
 
-        UIBlockingProgressHUD.show()
-
-        imageListService.changeLike(photoId: photo.id, isLiked: photo.isLiked) { result in
-            UIBlockingProgressHUD.dismiss()
-            switch result {
-            case .success:
-                self.photos = self.imageListService.photos
-                cell.setIsLiked(isLiked: self.photos[indexPath.row].isLiked)
-            case .failure:
-
-                let alertModel = AlertModel(
-                    title: "Что-то пошло не так(",
-                    message: "Не удалось поставить лайк",
-                    buttonText: "ОК",
-                    completion: nil
-                )
-                let alertPresenter = AlertPresenter(viewController: self)
-                alertPresenter.showAlert(for: alertModel)
-            }
+extension ImagesListViewController: ImagesListViewControllerProtocol {
+    func updateTableViewAnimated() {
+        let oldCount = photos.count
+        let newCount = imageListService.photos.count
+        photos = imageListService.photos
+        if oldCount != newCount {
+            tableView.performBatchUpdates {
+                let indexPaths = (oldCount..<newCount).map { i in
+                    IndexPath(row: i, section: 0)
+                }
+                tableView.insertRows(at: indexPaths, with: .automatic)
+            } completion: { _ in }
         }
+    }
+
+    func showLikeAlert() {
+        let alertModel = AlertModel(
+            title: "Что-то пошло не так(",
+            message: "Не удалось поставить лайк",
+            buttonText: "ОК",
+            completion: nil
+        )
+        let alertPresenter = AlertPresenter(viewController: self)
+        alertPresenter.showAlert(for: alertModel)
+    }
+}
+
+private extension ImagesListViewController {
+    private func setupObserver() {
+        UIBlockingProgressHUD.show()
+        imageListService.fetchPhotosNextPage() { _ in }
+        imageListServiceObserver = NotificationCenter.default
+            .addObserver(
+                forName: ImageListService.didChangeNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                guard let self = self else { return }
+                
+                self.updateTableViewAnimated()
+                UIBlockingProgressHUD.dismiss()
+                placeholderImage.isHidden = true
+            }
     }
 }

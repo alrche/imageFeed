@@ -46,6 +46,7 @@ extension AlertPresenter: AlertPresenting {
             let secondAction = UIAlertAction(title: secondButtonText, style: .default, handler: result.secondCompletion)
             alert.addAction(secondAction)
         }
+        alert.view.accessibilityIdentifier = "Alert"
 
         viewController.present(alert, animated: true, completion: nil)
     }

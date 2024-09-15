@@ -7,9 +7,6 @@
 
 import Foundation
 
-import Foundation
-
-
 final class ImageListService {
 
     static let shared = ImageListService()
