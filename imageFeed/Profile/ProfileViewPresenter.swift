@@ -5,12 +5,11 @@
 //  Created by Aliaksandr Charnyshou on 14.09.2024.
 //
 
-import Foundation
 import UIKit
 import Kingfisher
 import WebKit
 
-public protocol ProfileViewPresenterProtocol:  AnyObject {
+protocol ProfileViewPresenterProtocol:  AnyObject {
     var view: ProfileViewControllerProtocol? { get set }
     func addNotification()
     func updateProfile()
@@ -21,11 +20,9 @@ public protocol ProfileViewPresenterProtocol:  AnyObject {
 final class ProfileViewPresenter: ProfileViewPresenterProtocol {
     weak var view: ProfileViewControllerProtocol?
 
-
     private var profileImageServiceObserver: NSObjectProtocol?
     private let profileService = ProfileService.shared
     private let profileLogoutService = ProfileLogoutService.shared
-
 
     func addNotification() {
         profileImageServiceObserver = NotificationCenter.default.addObserver(

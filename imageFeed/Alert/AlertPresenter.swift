@@ -5,7 +5,6 @@
 //  Created by Aliaksandr Charnyshou on 10.08.2024.
 //
 
-import Foundation
 import UIKit
 
 protocol AlertPresenting: AnyObject {

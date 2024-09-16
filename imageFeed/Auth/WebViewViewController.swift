@@ -5,7 +5,6 @@
 //  Created by Aliaksandr Charnyshou on 27.07.2024.
 //
 
-import Foundation
 import UIKit
 import WebKit
 
@@ -17,7 +16,7 @@ protocol WebViewViewControllerDelegate: AnyObject {
     func webViewViewControllerDidCancel(_ vc: WebViewViewController)
 }
 
-public protocol WebViewViewControllerProtocol: AnyObject {
+protocol WebViewViewControllerProtocol: AnyObject {
     var presenter: WebViewPresenterProtocol? { get set }
     func load(request: URLRequest)
     func setProgressValue(_ newValue: Float)

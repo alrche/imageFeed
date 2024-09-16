@@ -5,7 +5,6 @@
 //  Created by Aliaksandr Charnyshou on 20.07.2024.
 //
 
-import Foundation
 import UIKit
 import Kingfisher
 
@@ -13,7 +12,7 @@ protocol ImagesListCellDelegate: ImagesListViewController {
     func imageListCellDidTapLike(_ cell: ImagesListCell)
 }
 
-final public class ImagesListCell: UITableViewCell {
+final class ImagesListCell: UITableViewCell {
 
     static let reuseIdentifier = "ImagesListCell"
     weak var delegate: ImagesListCellDelegate?
@@ -71,13 +70,13 @@ final public class ImagesListCell: UITableViewCell {
         super.init(coder: aDecoder)
     }
 
-    public override func layoutSubviews() {
+    override func layoutSubviews() {
         super.layoutSubviews()
 
         contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 4, left: 0, bottom: 4, right: 0))
     }
 
-    public override func prepareForReuse() {
+    override func prepareForReuse() {
         super.prepareForReuse( )
 
         mainImage.kf.cancelDownloadTask()

@@ -5,11 +5,10 @@
 //  Created by Aliaksandr Charnyshou on 14.09.2024.
 //
 
-import Foundation
 import UIKit
 import Kingfisher
 
-public protocol ImagesListViewPresenterProtocol {
+protocol ImagesListViewPresenterProtocol {
     var view: ImagesListViewControllerProtocol? { get set }
     func configCell(for cell: ImagesListCell, with indexPath: IndexPath)
     func imageListCellDidTapLike(_ cell: ImagesListCell)

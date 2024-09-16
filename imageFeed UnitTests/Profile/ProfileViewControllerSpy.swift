@@ -5,11 +5,11 @@
 //  Created by Aliaksandr Charnyshou on 14.09.2024.
 //
 
-import imageFeed
+@testable import imageFeed
 import Foundation
 
 final class ProfileViewControllerSpy: ProfileViewControllerProtocol {
-    var presenter: imageFeed.ProfileViewPresenterProtocol?
+    var presenter: ProfileViewPresenterProtocol?
 
     var updateProfileDetailsCalled: Bool = false
     var updateProfileImageCalled: Bool = false

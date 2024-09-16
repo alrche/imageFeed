@@ -11,10 +11,10 @@ final class imageFeed_UITests: XCTestCase {
     private let app = XCUIApplication()
 
     enum TestCredentials {
-          static let email = "alr.chernyshev@yandex.ru"
-          static let password = "Alex_3299885!"
-          static let fullName = "Aliaksandr Charnyshou"
-          static let login = "@alrche"
+          static let email = ""
+          static let password = ""
+          static let fullName = ""
+          static let login = ""
         }
 
     override func setUpWithError() throws {
@@ -89,5 +89,10 @@ final class imageFeed_UITests: XCTestCase {
         app.buttons["logout_button"].tap()
 
         app.alerts["Alert"].scrollViews.otherElements.buttons["Да"].tap()
+
+        sleep(2)
+
+        let authButton = app.buttons["Authenticate"]
+        XCTAssertTrue(authButton.waitForExistence(timeout: 5))
     }
 }

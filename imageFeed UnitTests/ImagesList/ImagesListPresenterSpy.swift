@@ -5,20 +5,20 @@
 //  Created by Aliaksandr Charnyshou on 15.09.2024.
 //
 
-import imageFeed
+@testable import imageFeed
 import Foundation
 
 final class ImagesListPresenterSpy: ImagesListViewPresenterProtocol {
-    var view: (any imageFeed.ImagesListViewControllerProtocol)?
+    var view: ImagesListViewControllerProtocol?
 
     var configCellCalled: Bool = false
     var imageListCellDidTapLikeCalled: Bool = false
 
-    func configCell(for cell: imageFeed.ImagesListCell, with indexPath: IndexPath) {
+    func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
         configCellCalled = true
     }
 
-    func imageListCellDidTapLike(_ cell: imageFeed.ImagesListCell) {
+    func imageListCellDidTapLike(_ cell: ImagesListCell) {
         imageListCellDidTapLikeCalled = true
     }
 }

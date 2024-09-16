@@ -5,12 +5,11 @@
 //  Created by Aliaksandr Charnyshou on 21.07.2024.
 //
 
-import Foundation
 import UIKit
 import Kingfisher
 import WebKit
 
-public protocol ProfileViewControllerProtocol: AnyObject {
+protocol ProfileViewControllerProtocol: AnyObject {
     var presenter: ProfileViewPresenterProtocol? { get set }
     func updateProfileDetails(profile: Profile?)
     func updateProfileImage(url: URL?)
