@@ -5,7 +5,6 @@
 //  Created by Aliaksandr Charnyshou on 20.07.2024.
 //
 
-import Foundation
 import UIKit
 import Kingfisher
 
@@ -33,6 +32,7 @@ final class ImagesListCell: UITableViewCell {
         button.layer.shadowOpacity = 0.2
         button.layer.shadowOffset = CGSize(width: 0, height:1)
         button.layer.shadowRadius = 4
+        button.accessibilityIdentifier = "like_button_off"
         return button
     }()
 
@@ -94,6 +94,7 @@ final class ImagesListCell: UITableViewCell {
         DispatchQueue.main.async {
             let imageName = isLiked ? "like_button_on" : "like_button_off"
             self.likeButton.setImage(UIImage(named: imageName), for: .normal)
+            self.likeButton.accessibilityIdentifier = imageName
         }
     }
 

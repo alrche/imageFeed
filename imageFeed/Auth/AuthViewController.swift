@@ -5,7 +5,6 @@
 //  Created by Aliaksandr Charnyshou on 27.07.2024.
 //
 
-import Foundation
 import UIKit
 
 protocol AuthViewControllerDelegate: AnyObject {
@@ -28,7 +27,12 @@ final class AuthViewController: UIViewController {
 
             guard let webViewViewController = segue.destination as? WebViewViewController else {
                 fatalError("Failed to prepare for \(segueIdentifier)")}
-            webViewViewController.delegate = self}
+            let authHelper = AuthHelper()
+            let webViewPresenter = WebViewPresenter(authHelper: authHelper)
+            webViewViewController.presenter = webViewPresenter
+            webViewPresenter.view = webViewViewController
+            webViewViewController.delegate = self
+        }
         else {
             super.prepare(for: segue, sender: sender)
         }

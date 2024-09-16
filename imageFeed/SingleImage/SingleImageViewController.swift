@@ -5,7 +5,6 @@
 //  Created by Aliaksandr Charnyshou on 21.07.2024.
 //
 
-import Foundation
 import UIKit
 
 final class SingleImageViewController: UIViewController {
@@ -42,6 +41,7 @@ final class SingleImageViewController: UIViewController {
     private let backwardButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "backward_button"), for: .normal)
+        button.accessibilityIdentifier = "backward_button"
         return button
     }()
 

@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "5F1941BD-E36C-4059-9DC5-E9F0459D6F93",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:imageFeed.xcodeproj",
+        "identifier" : "40F268DE2C959EB000FB8612",
+        "name" : "imageFeed UITests"
+      }
+    }
+  ],
+  "version" : 1
+}

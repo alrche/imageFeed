@@ -5,15 +5,18 @@
 //  Created by Aliaksandr Charnyshou on 21.07.2024.
 //
 
-import Foundation
 import UIKit
 import Kingfisher
 import WebKit
 
-final class ProfileViewController: UIViewController {
+protocol ProfileViewControllerProtocol: AnyObject {
+    var presenter: ProfileViewPresenterProtocol? { get set }
+    func updateProfileDetails(profile: Profile?)
+    func updateProfileImage(url: URL?)
+}
 
-    private let profileService = ProfileService.shared
-    private var profileImageServiceObserver: NSObjectProtocol?
+final class ProfileViewController: UIViewController {
+    var presenter: ProfileViewPresenterProtocol?
 
     private let profileImage: UIImageView = {
         let profileImage = UIImageView()
@@ -51,6 +54,7 @@ final class ProfileViewController: UIViewController {
         let logoutButton = UIButton(type: .custom)
         logoutButton.setImage(UIImage(named: "profile_logout_button"), for: .normal)
         logoutButton.tintColor = .ypRed
+        logoutButton.accessibilityIdentifier = "logout_button"
 
         return logoutButton
     }()
@@ -58,17 +62,12 @@ final class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        updateProfileDetails(profile: profileService.profile)
+        presenter = ProfileViewPresenter()
+        presenter?.view = self
 
-        profileImageServiceObserver = NotificationCenter.default.addObserver(
-            forName: ProfileImageService.didChangeNotification,
-            object: nil,
-            queue: .main
-        ) { [weak self] _ in
-            guard let self = self else { return }
-            self.updateProfileImage()
-        }
-        updateProfileImage()
+        presenter?.updateProfile()
+        presenter?.addNotification()
+        presenter?.updateAvatar()
 
         logoutButton.addTarget(self, action: #selector(logoutButtonDidTap), for: .touchUpInside)
         setupUI()
@@ -92,15 +91,6 @@ final class ProfileViewController: UIViewController {
             }
         }
 
-    }
-
-    private func updateProfileDetails(profile: Profile?) {
-        guard let profile = profile else {
-            return
-        }
-        self.realNameLabel.text = profile.name
-        self.usernameLabel.text = profile.loginName
-        self.textLabel.text = profile.bio
     }
 
     private func setupUI() {
@@ -148,7 +138,7 @@ final class ProfileViewController: UIViewController {
             message: "Уверены что хотите выйти?",
             buttonText: "Да",
             completion: { [weak self] _ in
-                ProfileLogoutService.shared.logout()
+                self?.presenter?.logoutProfile()
                 let viewController = SplashViewController()
                 viewController.modalPresentationStyle = .fullScreen
                 self?.present(viewController, animated: true, completion: nil)
@@ -157,5 +147,31 @@ final class ProfileViewController: UIViewController {
         )
 
         presenter.showAlert(for: alertModel)
+    }
+}
+
+extension ProfileViewController: ProfileViewControllerProtocol {
+    func updateProfileDetails(profile: Profile?) {
+        guard let profile = profile else {
+            return
+        }
+        self.realNameLabel.text = profile.name
+        self.usernameLabel.text = profile.loginName
+        self.textLabel.text = profile.bio
+    }
+
+    func updateProfileImage(url: URL?) {
+        let processor = RoundCornerImageProcessor(cornerRadius: 20)
+        profileImage.kf.indicatorType = .activity
+        profileImage.kf.setImage(with: url,
+                                 placeholder: UIImage(named: "userpick_stub"),
+                                 options: [.processor(processor)]) { result in
+            switch result {
+            case .success(let value):
+                print(value.image)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
     }
 }
